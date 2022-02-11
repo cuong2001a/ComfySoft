@@ -53,47 +53,8 @@ const AppProvider = ({ children }) => {
     const priceMaxLength = Math.max.apply(Math, price)
     setPrice(priceMaxLength);
   }
-  const getDetailCategory = async (name) => {
-
-    if (name === 'all') {
-      setProducts(mockData)
-    } else {
-      const detailCategory = mockData.filter(item => item.category === name);
-      console.log(detailCategory);
-      setProducts(detailCategory);
-    }
-  }
-  const filterColor = (item) => {
-    const resultFillter = mockData.filter(data => data.colors.includes(item))
-    setProducts(resultFillter)
-  }
   const filterAllColor = () => {
     setProducts(mockData);
-  }
-  const filterPrice = (e) => {
-    console.log(e.target.value);
-    const priceValue = e.target.value
-    const data = mockData.filter(data => data.price <= priceValue);
-    setProducts(data)
-    setPrice(priceValue)
-  }
-  const handleChangeCompany = async (e) => {
-    console.log(e.target.value);
-    if (e.target.value === 'all') {
-      setProducts(mockData);
-    } else {
-      const filterCompany = mockData.filter(item => item.company === e.target.value)
-      console.log(filterCompany);
-      setProducts(filterCompany);
-    }
-  }
-  const checkFreeShipping = async (e) => {
-    if (e.target.checked) {
-      setProducts(prev => prev.filter(item => item.shipping))
-    } else {
-      setProducts(mockData);
-    }
-
   }
   const filterProduct = () => {
     const setFilterProduct = [];
@@ -115,7 +76,6 @@ const AppProvider = ({ children }) => {
         count++;
       }
       if (count === 5) {
-        console.log(item)
         setFilterProduct.push(item)
       }
     })

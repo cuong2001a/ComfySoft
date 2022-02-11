@@ -2,11 +2,15 @@ import React, { memo, useContext, useEffect, useState } from 'react';
 import { AppContext } from '../Context';
 import ReactPaginate from 'react-paginate';
 import { FaBars, FaMicrosoft } from 'react-icons/fa';
+import { BsCheck } from 'react-icons/bs'
 const Content = memo(() => {
     const [showColumn, setShowColumn] = useState(false);
-    const { filter, setFilter, price, products, colors, category, company, setPageNumber, productsPerpage, pagesVisited,
-        pageCount, addToCart, handleChangeShort, searchProduct, filterAllColor, clearFilter,
-    } = useContext(AppContext);
+    const { filter,price, setFilter, products, colors, category, company, setPageNumber, productsPerpage, pagesVisited,
+        pageCount, addToCart, handleChangeShort, searchProduct, filterAllColor, clearFilter } = useContext(AppContext);
+    const [activeCate, setActviceCate] = useState(false);
+    const [cateItem, setCateItem] = useState(null);
+    const [colorItem, setColorItem] = useState(null);
+    const [activeColor, setActviceColor] = useState(false);
     const displayProducts = products
         ?.slice(pagesVisited, pagesVisited + productsPerpage)
         ?.map((item, index) => {
@@ -45,7 +49,6 @@ const Content = memo(() => {
                             </div>
                     }
                 </>
-
             );
         });
     useEffect(() => {
@@ -55,13 +58,35 @@ const Content = memo(() => {
         setPageNumber(selected);
     };
     const takeCategory = (item) => {
-        setFilter({ ...filter, category: item })
+        setCateItem(item);
+        if (item === 'all') {
+            console.log(1);
+            setFilter({ ...filter, category: '' })
+            setActviceCate(true);
+        } else {
+            setFilter({ ...filter, category: item })
+            setActviceCate(true)
+        }
     }
     const takeCompany = (e) => {
-        setFilter({ ...filter, company: e.target.value })
+        if (e.target.value === 'all') {
+            setFilter({ ...filter, company: '' })
+        } else {
+            setFilter({ ...filter, company: e.target.value })
+        }
     }
     const takeColor = (item) => {
+        setColorItem(item)
         setFilter({ ...filter, colors: item })
+        setActviceColor(true);
+    }
+    const takeAllColor = (e) => {
+
+        const a = e.target;
+        const id = a.id;
+        setColorItem(id);
+        setFilter({ ...filter, colors: '' })
+        setActviceColor(true)
     }
     const handleDisplayRow = () => {
         setShowColumn(true);
@@ -77,12 +102,14 @@ const Content = memo(() => {
             <div className="col-3">
                 <input type="text" placeholder='search...' onChange={searchProduct} className='rounded search-input mb-3' />
                 <h5 className='mb-3' >Category</h5>
-                <ul className='mb-3 px-0' >
+                <ul className='mb-3 px-0 right-active' >
                     {category && category.map((item, index) => {
+                        console.log(item);
                         return (
-                            <li key={index}>
+                            <li key={index} className="">
                                 <button onClick={() => takeCategory(item)}
-                                    style={{ background: 'white' }} className='null text-decoration-none text-end border-0 px-0 '>
+                                    style={{ background: 'white' }} className={activeCate && cateItem === item ?
+                                        'active text-decoration-none text-end  px-0' : 'null text-decoration-none text-end border-0 px-0 '} >
                                     {item}</button>
                             </li>
                         )
@@ -90,7 +117,6 @@ const Content = memo(() => {
                 </ul>
                 <h5 className='mb-3' >Company</h5>
                 <select className='mb-3' className="text-capitalize" name="company" id="company" onChange={takeCompany}>
-                    <option value="all">all</option>
                     {company && company.map((item, index) => {
                         return (
                             <option value={item} key={index}>{item}</option>
@@ -100,10 +126,10 @@ const Content = memo(() => {
                 </select>
                 <h5 className='mb-3' >Colors</h5>
                 <ul className='nav d-flex mb-3 align-items-center'>
-                    <li className='nav-item'><a className='nav-link p-0 me-1 text-dark' onClick={() => filterAllColor()}><span className=''>All</span></a></li>
+                    <li className='nav-item'><a className={activeColor && colorItem === 'all' ? 'nav-link p-0 me-1 text-dark activeAll' : 'nav-link p-0 me-1 text-dark '} onClick={takeAllColor}><span id='all' className=''>All</span></a></li>
                     {colors.map((item, index) => {
                         return (
-                            <li key={index} className='nav-item'><button style={{ backgroundColor: `${item}` }} onClick={() => takeColor(item)} className='circle-color nav-link px-0 mx-1'></button></li>
+                            <li key={index} className='nav-item'><button style={{ backgroundColor: `${item}` }} onClick={() => takeColor(item)} className='circle-color nav-link px-0 mx-1'> <BsCheck className={activeColor && colorItem === item ? "d-block text-white" : "d-none"} /></button></li>
                         )
                     })}
                 </ul>
@@ -113,7 +139,7 @@ const Content = memo(() => {
                 </div>
                 <div className='form-control price border-0 px-0'>
                     <input type="range" min='0' max='309999' onChange={(e) => setFilter({ ...filter, price: e.target.value })} /> <br />
-                    <label htmlFor="">${price}</label>
+                    <label htmlFor="">${filter.price}</label>
                 </div>
                 <button onClick={() => clearFilter()} className='btn btn-filter'>Clear fillter</button>
             </div>

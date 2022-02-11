@@ -2,6 +2,8 @@
     .product-item{
         cursor: pointer;
     }
+    
+    
     li{
     list-style-type: none;
     button{
@@ -19,7 +21,12 @@
         color: #617d98;
         cursor: pointer;
         &.active{
-            border-color: #617d98;
+            :first-child:active{
+                border-color: #617d98 !important;
+                border-bottom: 1px solid !important;
+            }
+            border-color: #617d98 !important;
+            border-bottom: 1px solid !important;
         }
     }
 }
@@ -159,5 +166,7 @@ button{
         }
     }   
 }
-
+.activeAll{
+    border-bottom: 1px solid black;
+}
 }
